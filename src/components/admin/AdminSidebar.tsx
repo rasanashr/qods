@@ -16,6 +16,7 @@ import {
   Settings,
   LogOut,
   ChevronLeft,
+  ListOrdered,
 } from "lucide-react";
 
 const menu = [
@@ -24,6 +25,7 @@ const menu = [
   { href: "/admin/products", label: "محصولات", icon: Package },
   { href: "/admin/properties", label: "املاک", icon: Building2 },
   { href: "/admin/lost-found", label: "اشیاء گمشده", icon: PackageSearch },
+  { href: "/admin/classifieds", label: "نیازمندی‌ها", icon: ListOrdered },
   { href: "/admin/restaurants", label: "رستوران‌ها", icon: Utensils },
   { href: "/admin/sama137", label: "سامانه ۱۳۷", icon: Phone },
   { href: "/admin/news", label: "اخبار", icon: Newspaper },

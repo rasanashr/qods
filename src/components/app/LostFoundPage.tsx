@@ -9,6 +9,7 @@ import {
 } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { useNav } from "@/lib/nav-store";
+import { useAuth } from "@/lib/auth-store";
 import {
   ChevronRight,
   Search,
@@ -23,6 +24,8 @@ import {
   CheckCircle2,
   User,
   ShieldCheck,
+  Plus,
+  ChevronLeft,
 } from "lucide-react";
 
 type StatusFilter = "all" | LostFoundStatus;
@@ -51,6 +54,7 @@ function dateToNumber(s: string): number {
 
 export function LostFoundPage() {
   const setView = useNav((s) => s.setView);
+  const isAuthenticated = useAuth((s) => s.isAuthenticated);
 
   const [lostFoundItems, setLostFoundItems] = useState<LostFoundItem[]>(fallbackItems);
   const [status, setStatus] = useState<StatusFilter>("all");
@@ -142,10 +146,11 @@ export function LostFoundPage() {
           </div>
           <button
             type="button"
-            aria-label="جستجوی پیشرفته"
-            className="size-9 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center ring-1 ring-white/15"
+            onClick={() => setView(isAuthenticated ? "post-lost-found" : "auth")}
+            aria-label="ثبت مورد"
+            className="size-9 rounded-full bg-white text-primary hover:bg-white/90 transition-colors flex items-center justify-center shadow"
           >
-            <SlidersHorizontal className="size-4.5" />
+            <Plus className="size-5" strokeWidth={2.5} />
           </button>
         </div>
 
@@ -165,6 +170,40 @@ export function LostFoundPage() {
       </header>
 
       <main className="flex-1 overflow-y-auto thin-scrollbar bg-muted/30 pb-2">
+        {/* بنر دعوت به ثبت مورد */}
+        {isAuthenticated && (
+          <section className="px-4 pt-3">
+            <button
+              type="button"
+              onClick={() => setView("post-lost-found")}
+              className="w-full relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500 via-cyan-500 to-blue-600 text-white p-4 shadow-md active:scale-[0.98] transition-transform"
+            >
+              <div className="pointer-events-none absolute -top-6 -left-6 size-24 rounded-full bg-white/10 blur-lg" />
+              <div className="relative flex items-center gap-3">
+                <div className="text-4xl shrink-0">🔍</div>
+                <div className="flex-1 text-right">
+                  <h3 className="text-sm font-bold">گم‌شده یا پیدا‌شده ثبت کنید</h3>
+                  <p className="text-[11px] text-white/85 mt-0.5">
+                    به سامانه اشیاء گمشده شهر قدس اضافه کنید
+                  </p>
+                </div>
+                <ChevronLeft className="size-5" />
+              </div>
+            </button>
+          </section>
+        )}
+
+        {!isAuthenticated && (
+          <section className="px-4 pt-3">
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-2">
+              <ShieldCheck className="size-5 text-amber-600 shrink-0" />
+              <p className="text-[11px] text-amber-800">
+                برای ثبت مورد گم‌شده یا پیدا‌شده، ابتدا با شماره موبایل وارد شوید.
+              </p>
+            </div>
+          </section>
+        )}
+
         {/* نوار راهنما */}
         <section className="px-4 pt-3">
           <div className="flex items-start gap-2 bg-sky-50 border border-sky-100 rounded-xl p-3">

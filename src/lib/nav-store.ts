@@ -9,7 +9,11 @@ export type AppView =
   | "store"
   | "product-detail"
   | "auth"
-  | "profile";
+  | "profile"
+  | "classifieds"
+  | "post-classified"
+  | "post-lost-found"
+  | "post-sama137";
 
 type NavState = {
   view: AppView;

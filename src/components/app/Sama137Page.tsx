@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useNav } from "@/lib/nav-store";
+import { useAuth } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
 import {
   ChevronRight,
@@ -10,15 +11,16 @@ import {
   ClipboardList,
   Headphones,
   AlertCircle,
+  Plus,
 } from "lucide-react";
-import { RequestForm } from "@/components/app/RequestForm";
 import { MyRequests } from "@/components/app/MyRequests";
 
-type Tab = "form" | "tracking";
+type Tab = "tracking" | "new";
 
 export function Sama137Page() {
   const setView = useNav((s) => s.setView);
-  const [tab, setTab] = useState<Tab>("form");
+  const isAuthenticated = useAuth((s) => s.isAuthenticated);
+  const [tab, setTab] = useState<Tab>("tracking");
 
   return (
     <>
@@ -59,66 +61,47 @@ export function Sama137Page() {
           </div>
         </div>
 
-        {/* تب‌ها */}
-        <div className="px-4 pb-0">
-          <div role="tablist" className="flex items-center gap-1 -mb-px">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={tab === "form"}
-              onClick={() => setTab("form")}
-              className={cn(
-                "flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-all border-b-2",
-                tab === "form"
-                  ? "border-white text-white"
-                  : "border-transparent text-white/70 hover:text-white"
-              )}
-            >
-              <PlusCircle className="size-4" />
-              ثبت درخواست
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={tab === "tracking"}
-              onClick={() => setTab("tracking")}
-              className={cn(
-                "flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-all border-b-2",
-                tab === "tracking"
-                  ? "border-white text-white"
-                  : "border-transparent text-white/70 hover:text-white"
-              )}
-            >
-              <ClipboardList className="size-4" />
-              پیگیری‌های من
-            </button>
-          </div>
+        {/* دکمه ثبت درخواست جدید */}
+        <div className="px-4 pb-2">
+          <button
+            type="button"
+            onClick={() => setView(isAuthenticated ? "post-sama137" : "auth")}
+            className="w-full inline-flex items-center justify-center gap-2 bg-white text-primary text-sm font-bold py-2.5 rounded-xl shadow active:scale-[0.98] transition-transform"
+          >
+            <PlusCircle className="size-4" />
+            ثبت درخواست جدید
+          </button>
         </div>
       </header>
 
       <main className="flex-1 overflow-y-auto thin-scrollbar bg-muted/30 pb-2">
-        {tab === "form" ? (
-          <>
-            {/* بنر راهنما */}
-            <section className="px-4 pt-3">
-              <div className="flex items-start gap-2 bg-sky-50 border border-sky-100 rounded-xl p-3">
-                <AlertCircle className="size-5 text-sky-600 shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-[11px] font-bold text-sky-900">
-                    راهنمای تکمیل فرم
-                  </p>
-                  <p className="text-[10px] text-sky-800/80 leading-relaxed mt-0.5">
-                    برای ثبت سریع‌تر درخواست، نوع مشکل را دقیق انتخاب کنید، آدرس کامل وارد کنید و در صورت امکان عکس یا ویدیو از محل پیوست کنید.
-                  </p>
-                </div>
-              </div>
-            </section>
+        {/* بنر راهنما */}
+        <section className="px-4 pt-3">
+          <div className="flex items-start gap-2 bg-sky-50 border border-sky-100 rounded-xl p-3">
+            <AlertCircle className="size-5 text-sky-600 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[11px] font-bold text-sky-900">
+                راهنما
+              </p>
+              <p className="text-[10px] text-sky-800/80 leading-relaxed mt-0.5">
+                با دکمه بالا می‌تونید درخواست جدید ثبت کنید. درخواست‌های قبلی خودتون رو هم در زیر ببینید و پیگیری کنید.
+              </p>
+            </div>
+          </div>
+        </section>
 
-            <RequestForm />
-          </>
-        ) : (
-          <MyRequests />
+        {!isAuthenticated && (
+          <section className="px-4 pt-3">
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-2">
+              <AlertCircle className="size-5 text-amber-600 shrink-0" />
+              <p className="text-[11px] text-amber-800">
+                برای ثبت درخواست جدید، ابتدا با شماره موبایل وارد شوید.
+              </p>
+            </div>
+          </section>
         )}
+
+        <MyRequests />
 
         {/* فوتر */}
         <footer className="px-4 py-6 text-center">

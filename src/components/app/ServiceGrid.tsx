@@ -8,7 +8,7 @@ export function ServiceGrid() {
   const setView = useNav((s) => s.setView);
 
   const handleClick = (id: string) => {
-    // املاک، اشیاء گمشده، سامانه ۱۳۷، سفارش غذا و فروشگاه پیاده‌سازی شده
+    // املاک، اشیاء گمشده، سامانه ۱۳۷، سفارش غذا، فروشگاه و نیازمندی‌ها پیاده‌سازی شده
     if (id === "amlak") {
       setView("amlak");
     } else if (id === "ashyae-gomshode") {
@@ -19,6 +19,8 @@ export function ServiceGrid() {
       setView("food");
     } else if (id === "foroushgah") {
       setView("store");
+    } else if (id === "niazmandiha") {
+      setView("classifieds");
     }
   };
 

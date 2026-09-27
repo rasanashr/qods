@@ -17,6 +17,10 @@ import { StorePage } from "@/components/app/StorePage";
 import { ProductDetailPage } from "@/components/app/ProductDetailPage";
 import { AuthPage } from "@/components/app/AuthPage";
 import { ProfilePage } from "@/components/app/ProfilePage";
+import { ClassifiedsPage } from "@/components/app/ClassifiedsPage";
+import { PostClassifiedForm } from "@/components/app/PostClassifiedForm";
+import { PostLostFoundForm } from "@/components/app/PostLostFoundForm";
+import { PostSama137Form } from "@/components/app/PostSama137Form";
 
 export function HomeView() {
   const view = useNav((s) => s.view);
@@ -59,6 +63,22 @@ export function HomeView() {
 
   if (view === "profile") {
     return <ProfilePage />;
+  }
+
+  if (view === "classifieds") {
+    return <ClassifiedsPage />;
+  }
+
+  if (view === "post-classified") {
+    return <PostClassifiedForm />;
+  }
+
+  if (view === "post-lost-found") {
+    return <PostLostFoundForm />;
+  }
+
+  if (view === "post-sama137") {
+    return <PostSama137Form />;
   }
 
   // به‌روزرسانی state هنگام برگشت از منوی پایین
