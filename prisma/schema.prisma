@@ -1,0 +1,398 @@
+// Prisma schema for شبکه قدس super-app
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =========================
+// Users
+// =========================
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  fullName     String
+  role         String   @default("admin") // "superadmin" | "admin" | "editor"
+  isActive     Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  logs AdminLog[]
+}
+
+model AppUser {
+  id         String   @id @default(cuid())
+  phone      String   @unique
+  name       String?
+  isVerified Boolean  @default(true)
+  isBlocked  Boolean  @default(false)
+  joinedAt   DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  products      Product[]
+  properties    Property[]
+  lostFound     LostFoundItem[]
+  samaRequests  Sama137Request[]
+  orders        Order[]
+  classifieds   Classified[]
+  visits        PageVisit[]
+  walletTx      WalletTransaction[]
+  otpCodes      OtpCode[]
+}
+
+// =========================
+// OTP Codes (for user phone auth)
+// =========================
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  consumed  Boolean  @default(false)
+  attemptCount Int @default(0)
+  createdAt DateTime @default(now())
+
+  userId   String?
+  user     AppUser? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([phone, code])
+}
+
+// =========================
+// Wallet
+// =========================
+
+model WalletTransaction {
+  id          String   @id @default(cuid())
+  userId     String
+  user       AppUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String   // "deposit" | "withdraw" | "spend" | "refund"
+  amount      Int      // به تومان (مثبت برای واریز، منفی برای برداشت)
+  balanceAfter Int     // موجودی پس از تراکنش
+  description String?
+  reference   String?  // شناسه مرجع (مثلاً آگهی یا سفارش)
+  status      String   @default("completed") // "pending" | "completed" | "failed"
+  createdAt   DateTime @default(now())
+}
+
+// =========================
+// Page visits (سابقه بازدید)
+// =========================
+
+model PageVisit {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      AppUser? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  path      String   // مسیر صفحه
+  title     String?  // عنوان صفحه
+  visitedAt DateTime @default(now())
+
+  @@index([userId, visitedAt])
+}
+
+// =========================
+// Classifieds (آگهی‌های نیازمندی‌ها توسط کاربر)
+// =========================
+
+model Classified {
+  id          String   @id @default(cuid())
+  title       String
+  category    String   // "electronics" | "vehicles" | "realestate" | ...
+  categoryLabel String
+  emoji       String   @default("📦")
+  description String
+  price       String   // قیمت به‌صورت رشته فارسی
+  location    String
+  district    String?
+  timeAgo     String   @default("همین الان")
+  badgeColor  String   @default("bg-emerald-50 text-emerald-700")
+  tags        String?  // JSON array
+  contactName String?
+  contactPhone String?
+  isPaid      Boolean  @default(false) // آیا آگهی پولی است
+  paidAmount  Int      @default(0) // مبلغ پرداختی به تومان
+  plan        String   @default("free") // "free" | "featured" | "urgent"
+  status      String   @default("pending") // "pending" | "approved" | "rejected" | "expired"
+  rejectionReason String?
+  publishedAt DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ownerId String?
+  owner   AppUser? @relation(fields: [ownerId], references: [id])
+
+  @@index([status, createdAt])
+}
+
+// =========================
+// Pricing for classified ads by category
+// =========================
+
+model ClassifiedPricing {
+  id            String  @id @default(cuid())
+  category      String  @unique
+  categoryLabel String
+  freeDays      Int     @default(7)  // مدت نمایش رایگان
+  featuredPrice Int     @default(50000)  // قیمت آگهی ویژه به تومان
+  urgentPrice   Int     @default(30000)  // قیمت آگهی فوری
+  featuredDays  Int     @default(30)
+  urgentDays    Int     @default(14)
+  isActive      Boolean @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// =========================
+// Store / Products
+// =========================
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  brand         String
+  price         Int      // به تومان
+  originalPrice  Int?
+  discount      Int?     // درصد
+  emoji         String  @default("📦")
+  rating        Float    @default(0)
+  reviewCount   Int      @default(0)
+  soldCount     Int      @default(0)
+  installment   String   @default("") // مثلا "۱۲ ماه قسطی"
+  bg            String   @default("bg-muted") // کلاس Tailwind برای پس‌زمینه
+  category      String   // "appliances" | "kitchen" | ...
+  categoryLabel String
+  description   String?
+  features      String?  // JSON array as string
+  specs         String?  // JSON array as string
+  inStock       Boolean  @default(true)
+  freeShipping  Boolean  @default(false)
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sellerId String?
+  seller   AppUser? @relation(fields: [sellerId], references: [id])
+
+  orders OrderItem[]
+}
+
+// =========================
+// Real Estate (Properties)
+// =========================
+
+model Property {
+  id           String   @id @default(cuid())
+  title        String
+  type         String   // "apartment" | "villa" | "land" | "shop" | "suite"
+  typeLabel    String
+  deal         String   // "sale" | "rent"
+  dealLabel    String
+  area         Int      // متراژ
+  rooms        Int      @default(0)
+  floor        Int?
+  totalFloors  Int?
+  age          Int      @default(0)
+  price        String   // قیمت کل یا رهن
+  rent         String?  // اجاره ماهانه
+  location     String
+  district     String
+  timeAgo      String
+  emoji        String   @default("🏠")
+  features     String?  // JSON array
+  hasParking   Boolean  @default(false)
+  hasElevator  Boolean  @default(false)
+  hasBalcony   Boolean  @default(false)
+  status       String   @default("pending") // "pending" | "approved" | "rejected"
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  ownerId String?
+  owner   AppUser? @relation(fields: [ownerId], references: [id])
+}
+
+// =========================
+// Lost & Found
+// =========================
+
+model LostFoundItem {
+  id            String   @id @default(cuid())
+  title         String
+  status        String   // "lost" | "found"
+  category      String   // "documents" | "electronics" | ...
+  categoryLabel String
+  emoji         String   @default("📦")
+  description   String
+  location      String
+  district      String
+  date          String   // تاریخ شمسی
+  timeAgo       String
+  reward        String?
+  contactName   String
+  contactType   String   // "owner" | "finder"
+  tags          String?  // JSON array
+  status_admin  String   @default("pending") // "pending" | "approved" | "rejected"
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  ownerId String?
+  owner   AppUser? @relation(fields: [ownerId], references: [id])
+}
+
+// =========================
+// Food ordering
+// =========================
+
+model Restaurant {
+  id            String   @id @default(cuid())
+  name          String
+  category      String   // "غذاهای ایرانی" | "کبابی" | ...
+  categoryEmoji String
+  coverGradient String
+  description   String
+  rating        Float    @default(0)
+  reviewCount   String   @default("0")
+  deliveryTime  String
+  deliveryFee   String
+  minOrder      String
+  tags          String?  // JSON array
+  isOpen        Boolean  @default(true)
+  featured      Boolean  @default(false)
+  discount      Int?
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  orders Order[]
+}
+
+// =========================
+// Sama 137 Requests
+// =========================
+
+model Sama137Request {
+  id            String   @id @default(cuid())
+  trackingCode  String   @unique
+  title         String
+  category      String
+  categoryLabel String
+  emoji         String   @default("📋")
+  description   String
+  address       String
+  district      String
+  status        String   @default("pending")
+  // "pending" | "in-progress" | "dispatched" | "resolved" | "rejected"
+  statusLabel   String   @default("در انتظار بررسی")
+  priority      String   @default("medium")
+  // "low" | "medium" | "high" | "urgent"
+  priorityLabel String   @default("متوسط")
+  createdAt     String   // تاریخ شمسی
+  timeAgo       String
+  updatedAt     String
+  attachments   String?  // JSON array
+  timeline      String?  // JSON array
+  referenceUnit String?
+  assignedTo    String?
+  isPublished   Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  requesterId String?
+  requester   AppUser? @relation(fields: [requesterId], references: [id])
+}
+
+// =========================
+// News
+// =========================
+
+model NewsItem {
+  id          String   @id @default(cuid())
+  title       String
+  excerpt     String
+  body        String   @default("")
+  category    String
+  timeAgo     String
+  readTime    String
+  emoji       String   @default("📰")
+  accent      String   @default("bg-primary")
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// =========================
+// Banners & Carousel slides
+// =========================
+
+model Banner {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String?
+  cta       String?
+  gradient  String
+  emoji     String   @default("✨")
+  position  String   @default("home_carousel") // "home_carousel" | "ad_banner"
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =========================
+// Orders (فروشگاه + غذا)
+// =========================
+
+model Order {
+  id          String   @id @default(cuid())
+  type        String   // "product" | "food"
+  status      String   @default("pending")
+  // "pending" | "paid" | "shipped" | "delivered" | "cancelled"
+  totalAmount Int      @default(0) // به تومان
+  address     String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId       String
+  user         AppUser @relation(fields: [userId], references: [id])
+  restaurantId String?
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  items        OrderItem[]
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int    @default(1)
+  price     Int    // قیمت هر واحد
+}
+
+// =========================
+// Admin audit log
+// =========================
+
+model AdminLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  admin     AdminUser @relation(fields: [adminId], references: [id])
+  action    String   // "create" | "update" | "delete" | "approve" | "reject"
+  resource  String   // "product" | "property" | ...
+  resourceId String?
+  detail    String?
+  createdAt DateTime @default(now())
+}
