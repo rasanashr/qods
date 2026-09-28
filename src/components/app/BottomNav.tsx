@@ -18,22 +18,42 @@ const tabs: { id: TabId; label: string; icon: typeof Home }[] = [
 
 export function BottomNav() {
   const [active, setActive] = useState<TabId>("home");
-  const setView = useNav((s) => s.setView);
-  const view = useNav((s) => s.view);
+  const { setView, view, setPostMenuOpen } = useNav();
   const isAuthenticated = useAuth((s) => s.isAuthenticated);
 
   const handleClick = (id: TabId) => {
     setActive(id);
-    // با کلیک روی «خانه» همیشه به صفحه خانه برمی‌گردیم
-    if (id === "home" && view !== "home") {
-      setView("home");
+
+    if (id === "home") {
+      if (view !== "home") {
+        setView("home");
+      }
       return;
     }
-    // با کلیک روی «پروفایل»: اگر وارد شده → پروفایل، در غیر این صورت → ورود
+
+    if (id === "discover") {
+      setView("discover");
+      return;
+    }
+
+    if (id === "post") {
+      // باز کردن منوی ثبت (bottom sheet)
+      setPostMenuOpen(true);
+      // فعال نگه‌داشتن تب قبلی (ثبت نباید active بشه)
+      return;
+    }
+
     if (id === "profile") {
       setView(isAuthenticated ? "profile" : "auth");
     }
   };
+
+  // تعیین تب فعال بر اساس view فعلی
+  const currentTab: TabId =
+    view === "discover" ? "discover"
+    : view === "profile" || view === "auth" ? "profile"
+    : view === "home" ? "home"
+    : "home";
 
   return (
     <nav
@@ -44,16 +64,16 @@ export function BottomNav() {
       <div className="flex items-end justify-around px-1 py-1.5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
-          const isActive = active === tab.id && view === "home";
+          const isActive = active === tab.id && (tab.id === "home" ? view === "home" : tab.id === "discover" ? view === "discover" : tab.id === "profile" ? (view === "profile" || view === "auth") : false);
 
           if (tab.id === "post") {
+            // دکمه میانی برجسته
             return (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => handleClick(tab.id)}
                 aria-label={tab.label}
-                aria-current={isActive}
                 className="relative -mt-4 flex flex-col items-center justify-center"
               >
                 <span

@@ -21,6 +21,8 @@ import { ClassifiedsPage } from "@/components/app/ClassifiedsPage";
 import { PostClassifiedForm } from "@/components/app/PostClassifiedForm";
 import { PostLostFoundForm } from "@/components/app/PostLostFoundForm";
 import { PostSama137Form } from "@/components/app/PostSama137Form";
+import { DiscoverPage } from "@/components/app/DiscoverPage";
+import { PostMenu } from "@/components/app/PostMenu";
 
 export function HomeView() {
   const view = useNav((s) => s.view);
@@ -79,6 +81,10 @@ export function HomeView() {
 
   if (view === "post-sama137") {
     return <PostSama137Form />;
+  }
+
+  if (view === "discover") {
+    return <DiscoverPage />;
   }
 
   // به‌روزرسانی state هنگام برگشت از منوی پایین
