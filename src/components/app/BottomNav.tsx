@@ -43,6 +43,11 @@ export function BottomNav() {
       return;
     }
 
+    if (id === "messages") {
+      setView(isAuthenticated ? "messenger" : "auth");
+      return;
+    }
+
     if (id === "profile") {
       setView(isAuthenticated ? "profile" : "auth");
     }
@@ -52,6 +57,7 @@ export function BottomNav() {
   const currentTab: TabId =
     view === "discover" ? "discover"
     : view === "profile" || view === "auth" ? "profile"
+    : view === "messenger" || view === "new-chat" || view === "chat-detail" ? "messages"
     : view === "home" ? "home"
     : "home";
 
@@ -64,7 +70,7 @@ export function BottomNav() {
       <div className="flex items-end justify-around px-1 py-1.5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
-          const isActive = active === tab.id && (tab.id === "home" ? view === "home" : tab.id === "discover" ? view === "discover" : tab.id === "profile" ? (view === "profile" || view === "auth") : false);
+          const isActive = active === tab.id && (tab.id === "home" ? view === "home" : tab.id === "discover" ? view === "discover" : tab.id === "profile" ? (view === "profile" || view === "auth") : tab.id === "messages" ? (view === "messenger" || view === "new-chat" || view === "chat-detail") : false);
 
           if (tab.id === "post") {
             // دکمه میانی برجسته

@@ -8,19 +8,25 @@ export function ServiceGrid() {
   const setView = useNav((s) => s.setView);
 
   const handleClick = (id: string) => {
-    // املاک، اشیاء گمشده، سامانه ۱۳۷، سفارش غذا، فروشگاه و نیازمندی‌ها پیاده‌سازی شده
-    if (id === "amlak") {
-      setView("amlak");
+    // خدمات شهری، املاک، اشیاء گمشده، سفارش غذا، فروشگاه، نیازمندی‌ها و سیم کارت پیاده‌سازی شده
+    if (id === "khadamat-shahri") {
+      setView("city-services");
     } else if (id === "ashyae-gomshode") {
       setView("lostfound");
-    } else if (id === "sama-137") {
-      setView("sama137");
     } else if (id === "sefare-ghaza") {
       setView("food");
     } else if (id === "foroushgah") {
       setView("store");
     } else if (id === "niazmandiha") {
       setView("classifieds");
+    } else if (id === "amlak") {
+      setView("amlak");
+    } else if (id === "sim-card") {
+      setView("sim-card");
+    } else if (id === "khadamat-zibaei") {
+      setView("beauty");
+    } else if (id === "payamresan") {
+      setView("messenger");
     }
   };
 

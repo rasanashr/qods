@@ -32,6 +32,7 @@ model AppUser {
   id         String   @id @default(cuid())
   phone      String   @unique
   name       String?
+  chatId     String?  @unique // شناسه شخصی پیامرسان (مثلاً qd-abc123)
   isVerified Boolean  @default(true)
   isBlocked  Boolean  @default(false)
   joinedAt   DateTime @default(now())
@@ -47,6 +48,78 @@ model AppUser {
   visits        PageVisit[]
   walletTx      WalletTransaction[]
   otpCodes      OtpCode[]
+  conversations1 Conversation[] @relation("ConvP1")
+  conversations2 Conversation[] @relation("ConvP2")
+  sentMessages  Message[]
+  blocksGiven   ChatBlock[] @relation("Blocker")
+  blocksReceived ChatBlock[] @relation("Blocked")
+  reportsMade    ChatReport[] @relation("Reporter")
+}
+
+// =========================
+// Chat / Messenger
+// =========================
+
+model Conversation {
+  id             String   @id @default(cuid())
+  participant1Id String
+  participant1   AppUser @relation("ConvP1", fields: [participant1Id], references: [id], onDelete: Cascade)
+  participant2Id String
+  participant2   AppUser @relation("ConvP2", fields: [participant2Id], references: [id], onDelete: Cascade)
+  // وضعیت گفتگو: pending (در انتظار تأیید) | accepted (تأیید شده) | blocked (بلاک شده) | deleted (حذف شده)
+  status         String   @default("pending")
+  // چه کسی درخواست گفتگو را شروع کرده
+  initiatedBy    String
+  lastMessageAt  DateTime @default(now())
+  lastMessageContent String?
+  lastMessageSenderId String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  messages Message[]
+
+  @@index([participant1Id])
+  @@index([participant2Id])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         AppUser @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  // محتوای رمزنگاری‌شده
+  content        String
+  // نوع پیام: text | image (base64)
+  messageType    String   @default("text")
+  isRead         Boolean  @default(false)
+  isReported     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model ChatBlock {
+  id          String   @id @default(cuid())
+  blockerId   String
+  blocker     AppUser  @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blockedId   String
+  blocked     AppUser  @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+}
+
+model ChatReport {
+  id              String   @id @default(cuid())
+  reporterId      String
+  reporter        AppUser  @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedUserId  String?
+  conversationId  String?
+  reason          String   // "spam" | "harassment" | "inappropriate" | "other"
+  description     String?
+  status          String   @default("pending") // "pending" | "reviewed" | "resolved"
+  createdAt       DateTime @default(now())
 }
 
 // =========================

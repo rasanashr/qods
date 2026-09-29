@@ -11,6 +11,8 @@ import {
   Trophy,
   Wallet,
   Utensils,
+  CreditCard,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 
@@ -27,8 +29,8 @@ export type ServiceItem = {
 
 export const services: ServiceItem[] = [
   {
-    id: "shahrdari",
-    label: "شهرداری",
+    id: "khadamat-shahri",
+    label: "خدمات شهری",
     icon: Building2,
     iconBg: "bg-teal-50",
     iconColor: "text-teal-700",
@@ -47,14 +49,6 @@ export const services: ServiceItem[] = [
     icon: Home,
     iconBg: "bg-amber-50",
     iconColor: "text-amber-700",
-  },
-  {
-    id: "sama-137",
-    label: "سامانه ۱۳۷",
-    icon: Phone,
-    iconBg: "bg-rose-50",
-    iconColor: "text-rose-700",
-    badge: "۱۳۷",
   },
   {
     id: "payamresan",
@@ -76,13 +70,6 @@ export const services: ServiceItem[] = [
     icon: Gamepad2,
     iconBg: "bg-pink-50",
     iconColor: "text-pink-700",
-  },
-  {
-    id: "naghshe-shahr",
-    label: "نقشه شهر",
-    icon: Map,
-    iconBg: "bg-cyan-50",
-    iconColor: "text-cyan-700",
   },
   {
     id: "ashyae-gomshode",
@@ -113,6 +100,101 @@ export const services: ServiceItem[] = [
     iconBg: "bg-orange-50",
     iconColor: "text-orange-700",
     badge: "نو",
+  },
+  {
+    id: "sim-card",
+    label: "سیم کارت",
+    icon: CreditCard,
+    iconBg: "bg-indigo-50",
+    iconColor: "text-indigo-700",
+    badge: "نو",
+  },
+  {
+    id: "khadamat-zibaei",
+    label: "خدمات زیبایی",
+    icon: Sparkles,
+    iconBg: "bg-pink-50",
+    iconColor: "text-pink-700",
+    badge: "نو",
+  },
+];
+
+/** خدمات شهری — منوهای داخل صفحه خدمات شهری */
+export type CityServiceItem = {
+  id: string;
+  label: string;
+  emoji: string;
+  description: string;
+  color: string;
+  isAvailable: boolean;
+  navView?: string;
+};
+
+export const cityServices: CityServiceItem[] = [
+  {
+    id: "sama137",
+    label: "سامانه ۱۳۷",
+    emoji: "📞",
+    description: "ثبت و پیگیری درخواست‌های شهری",
+    color: "bg-rose-50 text-rose-700",
+    isAvailable: true,
+    navView: "sama137",
+  },
+  {
+    id: "naghshe-shahr",
+    label: "نقشه شهر",
+    emoji: "🗺️",
+    description: "نقشه تعاملی شهر قدس",
+    color: "bg-cyan-50 text-cyan-700",
+    isAvailable: false,
+  },
+  {
+    id: "avarzeh",
+    label: "پرداخت عوارض",
+    emoji: "💳",
+    description: "پرداخت آنلاین عوارض شهرداری",
+    color: "bg-emerald-50 text-emerald-700",
+    isAvailable: false,
+  },
+  {
+    id: "takhalofat",
+    label: "گزارش تخلفات",
+    emoji: "🚨",
+    description: "گزارش تخلفات شهری و ترافیکی",
+    color: "bg-amber-50 text-amber-700",
+    isAvailable: false,
+  },
+  {
+    id: "traffic",
+    label: "وضعیت ترافیک",
+    emoji: "🚦",
+    description: "مشاهده وضعیت لحظه‌ای ترافیک",
+    color: "bg-sky-50 text-sky-700",
+    isAvailable: false,
+  },
+  {
+    id: "nobat",
+    label: "رزرو نوبت",
+    emoji: "📅",
+    description: "رزرو نوبت برای خدمات حضوری",
+    color: "bg-purple-50 text-purple-700",
+    isAvailable: false,
+  },
+  {
+    id: "sabagh",
+    label: "سابقه خانوار",
+    emoji: "🏠",
+    description: "ثبت و مدیریت سابقه سکونت",
+    color: "bg-teal-50 text-teal-700",
+    isAvailable: false,
+  },
+  {
+    id: "mizan",
+    label: "میزان مصرف",
+    emoji: "📊",
+    description: "مشاهده مصرف آب، برق و گاز",
+    color: "bg-indigo-50 text-indigo-700",
+    isAvailable: false,
   },
 ];
 
@@ -1618,3 +1700,315 @@ export const restaurants: Restaurant[] = [
 
 
 
+
+/** =========================
+ *  بخش سیم کارت
+ *  =========================
+ */
+
+export type SimOperator = {
+  id: string;
+  label: string;
+  emoji: string;
+  color: string;
+  prefix: string;
+};
+
+export const simOperators: SimOperator[] = [
+  { id: "irancell", label: "ایرانسل", emoji: "📡", color: "bg-amber-50 text-amber-700", prefix: "۰۹۳۵" },
+  { id: "mci", label: "همراه اول", emoji: "📱", color: "bg-sky-50 text-sky-700", prefix: "۰۹۱۲" },
+  { id: "rightel", label: "رایتل", emoji: "📡", color: "bg-violet-50 text-violet-700", prefix: "۰۹۲۰" },
+  { id: "shatel", label: "شاتل", emoji: "📡", color: "bg-teal-50 text-teal-700", prefix: "۰۹۹۸" },
+  { id: "samantel", label: "سامانتل", emoji: "📡", color: "bg-orange-50 text-orange-700", prefix: "۰۹۳۰" },
+];
+
+export type SimType = {
+  id: string;
+  label: string;
+  emoji: string;
+  color: string;
+};
+
+export const simTypes: SimType[] = [
+  { id: "new", label: "نو", emoji: "✨", color: "bg-emerald-50 text-emerald-700" },
+  { id: "used", label: "کارکرده", emoji: "♻️", color: "bg-amber-50 text-amber-700" },
+];
+
+export type SimCardListing = {
+  id: string;
+  number: string;
+  operator: string;
+  operatorLabel: string;
+  operatorEmoji: string;
+  operatorColor: string;
+  type: "new" | "used";
+  typeLabel: string;
+  typeColor: string;
+  price: string;
+  location: string;
+  district: string;
+  timeAgo: string;
+  features: string[];
+  seller: {
+    name: string;
+    phone: string;
+    rating: number;
+    verified: boolean;
+    totalSales: number;
+  };
+};
+
+export const simCards: SimCardListing[] = [
+  {
+    id: "sc1",
+    number: "۰۹۳۵-۱۲۳-۴۵۶۷",
+    operator: "irancell",
+    operatorLabel: "ایرانسل",
+    operatorEmoji: "📡",
+    operatorColor: "bg-amber-50 text-amber-700",
+    type: "new",
+    typeLabel: "نو",
+    typeColor: "bg-emerald-50 text-emerald-700",
+    price: "۱٫۲۰۰٫۰۰۰ ت",
+    location: "میدان قدس، پاساژ قدس",
+    district: "مرکز شهر",
+    timeAgo: "۲ ساعت پیش",
+    features: ["بسته ۱۰ گیگ رایگان", "رند عالی", "شارژ اولیه ۵۰ هزار ت"],
+    seller: { name: "فروشگاه سیم‌کارت قدس", phone: "۰۹۱۲۱۱۱۲۲۳۳", rating: 4.8, verified: true, totalSales: 320 },
+  },
+  {
+    id: "sc2",
+    number: "۰۹۱۲-۹۸۷-۶۵۴۳",
+    operator: "mci",
+    operatorLabel: "همراه اول",
+    operatorEmoji: "📱",
+    operatorColor: "bg-sky-50 text-sky-700",
+    type: "used",
+    typeLabel: "کارکرده",
+    typeColor: "bg-amber-50 text-amber-700",
+    price: "۸۵۰٫۰۰۰ ت",
+    location: "بلوار امین، پاساژ آریا",
+    district: "بلوار امین",
+    timeAgo: "۵ ساعت پیش",
+    features: ["رند زیبا", "سه ماه کارکرد", "بدون بدهی"],
+    seller: { name: "علی محمدی", phone: "۰۹۱۲۴۴۴۵۵۶۶", rating: 4.5, verified: false, totalSales: 28 },
+  },
+  {
+    id: "sc3",
+    number: "۰۹۲۰-۱۱۱-۲۲۲۲",
+    operator: "rightel",
+    operatorLabel: "رایتل",
+    operatorEmoji: "📡",
+    operatorColor: "bg-violet-50 text-violet-700",
+    type: "new",
+    typeLabel: "نو",
+    typeColor: "bg-emerald-50 text-emerald-700",
+    price: "۶۵۰٫۰۰۰ ت",
+    location: "خیابان امام، بازار قدس",
+    district: "مرکز شهر",
+    timeAgo: "دیروز",
+    features: ["نو با جعبه", "بسته اینترنت ۴G", "شماactive شدن"],
+    seller: { name: "مرکز تلفن همراه قدس", phone: "۰۹۱۲۷۷۷۸۸۹۹", rating: 4.9, verified: true, totalSales: 540 },
+  },
+  {
+    id: "sc4",
+    number: "۰۹۳۵-۷۷۷-۸۸۸۸",
+    operator: "irancell",
+    operatorLabel: "ایرانسل",
+    operatorEmoji: "📡",
+    operatorColor: "bg-amber-50 text-amber-700",
+    type: "used",
+    typeLabel: "کارکرده",
+    typeColor: "bg-amber-50 text-amber-700",
+    price: "۳٫۵۰۰٫۰۰۰ ت",
+    location: "شهرک قدس، بلوار مطهری",
+    district: "شهرک قدس",
+    timeAgo: "۲ روز پیش",
+    features: ["رند طلایی ۷۷۷۸۸۸۸", "دو سال کارکرد", "تعرفه ویژه", "ماهیانه ۵۹ هزار ت"],
+    seller: { name: "رضا نوری", phone: "۰۹۱۲۳۴۵۶۷۸۹", rating: 4.7, verified: true, totalSales: 95 },
+  },
+  {
+    id: "sc5",
+    number: "۰۹۱۲-۵۵۵-۶۶۶۶",
+    operator: "mci",
+    operatorLabel: "همراه اول",
+    operatorEmoji: "📱",
+    operatorColor: "bg-sky-50 text-sky-700",
+    type: "new",
+    typeLabel: "نو",
+    typeColor: "bg-emerald-50 text-emerald-700",
+    price: "۲٫۸۰۰٫۰۰۰ ت",
+    location: "میدان قدس، پاساژ ولیعصر",
+    district: "مرکز شهر",
+    timeAgo: "۳ روز پیش",
+    features: ["رند طلایی ۵۵۵۶۶۶۶", "نو با جعبه", "دایمی", "اعتبار اولیه ۱۰۰ هزار ت"],
+    seller: { name: "فروشگاه سیم‌کارت ولیعصر", phone: "۰۹۱۲۹۹۹۰۰۰۰", rating: 4.6, verified: true, totalSales: 210 },
+  },
+  {
+    id: "sc6",
+    number: "۰۹۹۸-۳۲۱-۰۹۸۷",
+    operator: "shatel",
+    operatorLabel: "شاتل",
+    operatorEmoji: "📡",
+    operatorColor: "bg-teal-50 text-teal-700",
+    type: "new",
+    typeLabel: "نو",
+    typeColor: "bg-emerald-50 text-emerald-700",
+    price: "۹۰۰٫۰۰۰ ت",
+    location: "بلوار امین، مجتمع تجاری آریا",
+    district: "بلوار امین",
+    timeAgo: "۴ روز پیش",
+    features: ["نو با جعبه", "اینترنت نامحدود ۴G", "نصب رایگان"],
+    seller: { name: "نمایندگی شاتل قدس", phone: "۰۹۱۲۵۵۵۶۶۷۷", rating: 4.4, verified: false, totalSales: 45 },
+  },
+  {
+    id: "sc7",
+    number: "۰۹۳۰-۴۴۴-۵۵۵۵",
+    operator: "samantel",
+    operatorLabel: "سامانتل",
+    operatorEmoji: "📡",
+    operatorColor: "bg-orange-50 text-orange-700",
+    type: "used",
+    typeLabel: "کارکرده",
+    typeColor: "bg-amber-50 text-amber-700",
+    price: "۴۲۰٫۰۰۰ ت",
+    location: "خیابان مطهری، پلاک ۱۵",
+    district: "خیابان مطهری",
+    timeAgo: "۵ روز پیش",
+    features: ["شش ماه کارکرد", "رند خوب", "بدون بدهی", "انتقال ساده"],
+    seller: { name: "حسین موسوی", phone: "۰۹۱۲۸۸۸۹۹۰۰", rating: 4.2, verified: false, totalSales: 12 },
+  },
+  {
+    id: "sc8",
+    number: "۰۹۳۵-۰۰۰-۱۲۳۴",
+    operator: "irancell",
+    operatorLabel: "ایرانسل",
+    operatorEmoji: "📡",
+    operatorColor: "bg-amber-50 text-amber-700",
+    type: "new",
+    typeLabel: "نو",
+    typeColor: "bg-emerald-50 text-emerald-700",
+    price: "۸٫۵۰۰٫۰۰۰ ت",
+    location: "میدان قدس، پاساژ قدس",
+    district: "مرکز شهر",
+    timeAgo: "یک هفته پیش",
+    features: ["رند فوق‌العاده ۰۰۰۱۲۳۴", "نو دایمی", "تعرفه ویژه", "ماهیانه ۳۹ هزار ت", "بسته ۵۰ گیگ"],
+    seller: { name: "فروشگاه سیم‌کارت قدس", phone: "۰۹۱۲۱۱۱۲۲۳۳", rating: 4.8, verified: true, totalSales: 320 },
+  },
+  {
+    id: "sc9",
+    number: "۰۹۱۲-۱۲۳-۴۵۶۷",
+    operator: "mci",
+    operatorLabel: "همراه اول",
+    operatorEmoji: "📱",
+    operatorColor: "bg-sky-50 text-sky-700",
+    type: "used",
+    typeLabel: "کارکرده",
+    typeColor: "bg-amber-50 text-amber-700",
+    price: "۵۵۰٫۰۰۰ ت",
+    location: "شهرک قدس، بلوار امین",
+    district: "شهرک قدس",
+    timeAgo: "یک هفته پیش",
+    features: ["یک سال کارکرد", "رند متوسط", "بدون بدهی"],
+    seller: { name: "زهرا کریمی", phone: "۰۹۱۲۲۲۲۳۳۴۴", rating: 4.0, verified: false, totalSales: 8 },
+  },
+  {
+    id: "sc10",
+    number: "۰۹۲۰-۸۸۸-۹۹۹۹",
+    operator: "rightel",
+    operatorLabel: "رایتل",
+    operatorEmoji: "📡",
+    operatorColor: "bg-violet-50 text-violet-700",
+    type: "new",
+    typeLabel: "نو",
+    typeColor: "bg-emerald-50 text-emerald-700",
+    price: "۱٫۱۰۰٫۰۰۰ ت",
+    location: "بلوار مطهری، پاساژ آریا",
+    district: "بلوار مطهری",
+    timeAgo: "۲ هفته پیش",
+    features: ["رند زیبا ۸۸۸۹۹۹۹", "نو با جعبه", "اینترنت ۴G", "مهاجرت‌پذیر"],
+    seller: { name: "مرکز تلفن همراه قدس", phone: "۰۹۱۲۷۷۷۸۸۹۹", rating: 4.9, verified: true, totalSales: 540 },
+  },
+];
+
+/** =========================
+ *  بخش خدمات زیبایی
+ *  =========================
+ */
+
+export type BeautyServiceItem = {
+  id: string;
+  label: string;
+  emoji: string;
+  description: string;
+  color: string;
+  isAvailable: boolean;
+  navView?: string;
+};
+
+export const beautyServices: BeautyServiceItem[] = [
+  {
+    id: "salon-zibaei",
+    label: "سالن زیبایی",
+    emoji: "💅",
+    description: "خدمات آرایشی پوست، مو و صورت در سالن‌های معتبر",
+    color: "bg-rose-50 text-rose-700",
+    isAvailable: false,
+  },
+  {
+    id: "salon-keratin",
+    label: "سالن کراتین مو",
+    emoji: "💇‍♀️",
+    description: "کراتین‌تراپی، پروتئین‌تراپی و احیای مو",
+    color: "bg-purple-50 text-purple-700",
+    isAvailable: false,
+  },
+  {
+    id: "pezeshk-post",
+    label: "پزشک پوست و مو",
+    emoji: "👩‍⚕️",
+    description: "مشاوره و درمان تخصصی مشکلات پوست و مو",
+    color: "bg-emerald-50 text-emerald-700",
+    isAvailable: false,
+  },
+  {
+    id: "arayesh-shop",
+    label: "فروشگاه لوازم آرایشی",
+    emoji: "💄",
+    description: "خرید آنلاین لوازم آرایشی و بهداشتی اصل",
+    color: "bg-fuchsia-50 text-fuchsia-700",
+    isAvailable: false,
+  },
+  {
+    id: "kast-nakhon",
+    label: "کاشت ناخن",
+    emoji: "💎",
+    description: "کاشت و طراحی ناخن توسط متخصصین",
+    color: "bg-amber-50 text-amber-700",
+    isAvailable: false,
+  },
+  {
+    id: "massage-spa",
+    label: "ماساژ و اسپا",
+    emoji: "💆‍♀️",
+    description: "خدمات ماساژ درمانی و اسپای روزانه",
+    color: "bg-sky-50 text-sky-700",
+    isAvailable: false,
+  },
+  {
+    id: "clinic-laser",
+    label: "کلینیک لیزر",
+    emoji: "⚕️",
+    description: "لیزر موهای زائد و درمان‌های لیزری پوست",
+    color: "bg-teal-50 text-teal-700",
+    isAvailable: false,
+  },
+  {
+    id: "clinic-laghari",
+    label: "کلینیک لاغری",
+    emoji: "🏋️",
+    description: "خدمات لاغری موضعی و کاهش وزن تخصصی",
+    color: "bg-violet-50 text-violet-700",
+    isAvailable: false,
+  },
+];

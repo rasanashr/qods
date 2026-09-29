@@ -23,6 +23,12 @@ import { PostLostFoundForm } from "@/components/app/PostLostFoundForm";
 import { PostSama137Form } from "@/components/app/PostSama137Form";
 import { DiscoverPage } from "@/components/app/DiscoverPage";
 import { PostMenu } from "@/components/app/PostMenu";
+import { CityServicesPage } from "@/components/app/CityServicesPage";
+import { SimCardPage } from "@/components/app/SimCardPage";
+import { BeautyServicesPage } from "@/components/app/BeautyServicesPage";
+import { MessengerPage } from "@/components/app/MessengerPage";
+import { NewChatPage } from "@/components/app/NewChatPage";
+import { ChatDetailPage } from "@/components/app/ChatDetailPage";
 
 export function HomeView() {
   const view = useNav((s) => s.view);
@@ -85,6 +91,30 @@ export function HomeView() {
 
   if (view === "discover") {
     return <DiscoverPage />;
+  }
+
+  if (view === "city-services") {
+    return <CityServicesPage />;
+  }
+
+  if (view === "sim-card") {
+    return <SimCardPage />;
+  }
+
+  if (view === "beauty") {
+    return <BeautyServicesPage />;
+  }
+
+  if (view === "messenger") {
+    return <MessengerPage />;
+  }
+
+  if (view === "new-chat") {
+    return <NewChatPage />;
+  }
+
+  if (view === "chat-detail") {
+    return <ChatDetailPage />;
   }
 
   // به‌روزرسانی state هنگام برگشت از منوی پایین
